@@ -13,6 +13,16 @@ document.addEventListener('DOMContentLoaded', () => {
   const emptyStateEl = document.getElementById('emptyState');
   const dataListEl = document.getElementById('dataList');
 
+  // Bulk search elements
+  const toggleBulkSearchBtn = document.getElementById('toggleBulkSearch');
+  const bulkSearchPanel = document.getElementById('bulkSearchPanel');
+  const bulkSearchQueries = document.getElementById('bulkSearchQueries');
+  const searchRealtorCheckbox = document.getElementById('searchRealtor');
+  const searchLoopNetCheckbox = document.getElementById('searchLoopNet');
+  const searchDelayInput = document.getElementById('searchDelay');
+  const startBulkSearchBtn = document.getElementById('startBulkSearch');
+  const bulkSearchStatus = document.getElementById('bulkSearchStatus');
+
   let allData = [];
   let filteredData = [];
 
@@ -26,6 +36,10 @@ document.addEventListener('DOMContentLoaded', () => {
   clearBtn.addEventListener('click', clearAllData);
   sourceFilterEl.addEventListener('change', applyFilters);
   typeFilterEl.addEventListener('change', applyFilters);
+
+  // Bulk search event listeners
+  toggleBulkSearchBtn.addEventListener('click', toggleBulkSearch);
+  startBulkSearchBtn.addEventListener('click', startBulkSearch);
 
   // Load data from storage
   async function loadData() {
@@ -363,5 +377,88 @@ document.addEventListener('DOMContentLoaded', () => {
   // Hide loading state
   function hideLoading() {
     loadingEl.style.display = 'none';
+  }
+
+  // Toggle bulk search panel
+  function toggleBulkSearch() {
+    if (bulkSearchPanel.style.display === 'none') {
+      bulkSearchPanel.style.display = 'block';
+      toggleBulkSearchBtn.textContent = 'Hide Bulk Search';
+    } else {
+      bulkSearchPanel.style.display = 'none';
+      toggleBulkSearchBtn.textContent = 'Bulk Search';
+    }
+  }
+
+  // Start bulk search
+  async function startBulkSearch() {
+    const queries = bulkSearchQueries.value
+      .split('\n')
+      .map(q => q.trim())
+      .filter(q => q.length > 0);
+
+    if (queries.length === 0) {
+      showBulkSearchStatus('Please enter at least one search query', 'error');
+      return;
+    }
+
+    const searchRealtor = searchRealtorCheckbox.checked;
+    const searchLoopNet = searchLoopNetCheckbox.checked;
+
+    if (!searchRealtor && !searchLoopNet) {
+      showBulkSearchStatus('Please select at least one website to search', 'error');
+      return;
+    }
+
+    const delay = parseInt(searchDelayInput.value) * 1000;
+
+    // Disable button during search
+    startBulkSearchBtn.disabled = true;
+    startBulkSearchBtn.textContent = 'Searching...';
+
+    showBulkSearchStatus(`Starting bulk search for ${queries.length} queries...`, 'info');
+
+    try {
+      await chrome.runtime.sendMessage({
+        action: 'startBulkSearch',
+        queries: queries,
+        sites: {
+          realtor: searchRealtor,
+          loopnet: searchLoopNet
+        },
+        delay: delay
+      });
+
+      showBulkSearchStatus(
+        `Bulk search started! ${queries.length} queries will be searched. ` +
+        `Check the browser tabs for progress. The extension will automatically scrape matching listings.`,
+        'success'
+      );
+
+      // Auto-refresh data after a delay
+      setTimeout(() => {
+        loadData();
+      }, delay + 2000);
+
+    } catch (error) {
+      showBulkSearchStatus(`Error starting bulk search: ${error.message}`, 'error');
+    } finally {
+      startBulkSearchBtn.disabled = false;
+      startBulkSearchBtn.textContent = 'Start Bulk Search';
+    }
+  }
+
+  // Show bulk search status message
+  function showBulkSearchStatus(message, type) {
+    bulkSearchStatus.textContent = message;
+    bulkSearchStatus.className = 'bulk-search-status active ' + type;
+    bulkSearchStatus.style.display = 'block';
+
+    // Auto-hide after 10 seconds for non-error messages
+    if (type !== 'error') {
+      setTimeout(() => {
+        bulkSearchStatus.style.display = 'none';
+      }, 10000);
+    }
   }
 });

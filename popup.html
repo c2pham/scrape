@@ -30,6 +30,7 @@
         <select id="sourceFilter">
           <option value="">All Sources</option>
           <option value="realtor.com">Realtor.com</option>
+          <option value="loopnet">LoopNet</option>
           <option value="mls">MLS</option>
         </select>
       </label>
@@ -42,6 +43,35 @@
           <option value="closed_land_lot">Closed Land Lots</option>
         </select>
       </label>
+    </div>
+
+    <div class="bulk-search">
+      <button id="toggleBulkSearch" class="btn btn-toggle">Bulk Search</button>
+      <div id="bulkSearchPanel" class="bulk-search-panel" style="display: none;">
+        <label>
+          <span>Search queries (one per line):</span>
+          <textarea id="bulkSearchQueries" placeholder="Example:&#10;Los Angeles CA land for sale&#10;San Francisco CA new homes&#10;Seattle WA commercial property" rows="5"></textarea>
+        </label>
+        <label>
+          <span>Target websites:</span>
+          <div class="checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="searchRealtor" checked>
+              <span>Realtor.com</span>
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" id="searchLoopNet" checked>
+              <span>LoopNet</span>
+            </label>
+          </div>
+        </label>
+        <label>
+          <span>Delay between searches (seconds):</span>
+          <input type="number" id="searchDelay" min="3" max="30" value="5">
+        </label>
+        <button id="startBulkSearch" class="btn btn-primary">Start Bulk Search</button>
+        <div id="bulkSearchStatus" class="bulk-search-status"></div>
+      </div>
     </div>
 
     <div class="actions">

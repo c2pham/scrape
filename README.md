@@ -1,23 +1,26 @@
-# MLS & Realtor.com Scraper Chrome Extension
+# MLS, Realtor.com & LoopNet Scraper Chrome Extension
 
-A Chrome extension that automatically scrapes realtor information from MLS and Realtor.com listings. Specifically designed to capture data from:
+A Chrome extension that automatically scrapes realtor/broker information from MLS, Realtor.com, and LoopNet listings. Specifically designed to capture data from:
 - Homes built in **2025** (current year)
 - **Closed land lot** listings
+- Commercial properties built in 2025
 
 ## Features
 
-- **Automatic Scraping**: Automatically detects and scrapes listing pages when you browse Realtor.com and MLS websites
+- **Automatic Scraping**: Automatically detects and scrapes listing pages when you browse Realtor.com, LoopNet, and MLS websites
 - **Manual Scraping**: Click the scrape button on any listing page to manually trigger scraping
-- **Smart Filtering**: Only saves listings that match your criteria (new homes or closed land lots)
-- **Realtor Information**: Extracts comprehensive realtor details including:
+- **Bulk Search**: Enter multiple search queries (one per line) and automatically search across Realtor.com and LoopNet
+- **Smart Filtering**: Only saves listings that match your criteria (new homes/properties or closed land lots)
+- **Realtor/Broker Information**: Extracts comprehensive details including:
   - Name
   - Phone number
   - Email address
   - Company/Brokerage
   - License number
 - **Data Management**: View, filter, and manage all scraped data through an intuitive popup interface
-- **Export Options**: Export your data in JSON or CSV format
-- **Multi-Source Support**: Works with both Realtor.com and various MLS platforms
+- **CSV Export**: Export your data in CSV format (spreadsheet-compatible) for easy analysis
+- **JSON Export**: Also available for programmatic use
+- **Multi-Source Support**: Works with Realtor.com, LoopNet, and various MLS platforms
 
 ## Installation
 
@@ -104,9 +107,41 @@ Save this as `icon-generator.html` and open it in your browser. Adjust the canva
 
 ### Manual Scraping
 
-1. Click the **"Scrape Realtor Info"** or **"Scrape MLS Info"** button that appears on listing pages
+1. Click the **"Scrape Realtor Info"**, **"Scrape LoopNet Info"**, or **"Scrape MLS Info"** button that appears on listing pages
 2. Wait for the scraping to complete
 3. The button will show the result (saved, no match, or error)
+
+### Bulk Search
+
+The bulk search feature allows you to search multiple queries across Realtor.com and LoopNet automatically:
+
+1. Click the extension icon to open the popup
+2. Click the **"Bulk Search"** button to expand the bulk search panel
+3. Enter your search queries in the text area, **one per line**. Examples:
+   ```
+   Los Angeles CA land for sale
+   San Francisco CA new homes 2025
+   Seattle WA commercial property
+   Austin TX vacant land
+   ```
+4. Select which websites to search:
+   - ✅ Realtor.com
+   - ✅ LoopNet
+5. Set the delay between searches (3-30 seconds, default 5 seconds)
+   - This helps avoid overwhelming the websites
+6. Click **"Start Bulk Search"**
+7. The extension will:
+   - Open new browser tabs for each search query
+   - Wait the specified delay between each search
+   - Automatically scrape matching listings on each page
+8. Once complete, click **"Refresh"** to see all newly scraped data
+9. Click **"Export CSV"** to download all your data in spreadsheet format
+
+**Tips for Bulk Search:**
+- Be specific with your queries (include location and property type)
+- Use realistic delays (5-10 seconds) to avoid detection
+- The tabs open in the background - you can continue working
+- Check the bulk search status message for progress updates
 
 ### Viewing Scraped Data
 
@@ -119,14 +154,17 @@ Save this as `icon-generator.html` and open it in your browser. Adjust the canva
 ### Filtering Data
 
 Use the dropdown filters in the popup to filter by:
-- **Source**: All Sources, Realtor.com, or MLS
+- **Source**: All Sources, Realtor.com, LoopNet, or MLS
 - **Type**: All Types, New Homes (2025), or Closed Land Lots
 
 ### Exporting Data
 
-1. Click **"Export JSON"** to download data in JSON format
-2. Click **"Export CSV"** to download data in CSV format (spreadsheet-compatible)
+**Primary Export Format: CSV** - Perfect for opening in Excel, Google Sheets, or any spreadsheet application
+
+1. Click **"Export CSV"** to download data in CSV format (recommended for most users)
+2. Click **"Export JSON"** to download data in JSON format (for developers/programmatic use)
 3. Files are automatically downloaded with timestamps
+4. CSV format includes one row per realtor, with all listing details included
 
 ### Managing Data
 
@@ -141,6 +179,14 @@ Use the dropdown filters in the popup to filter by:
 - ✅ Full support for listing pages
 - ✅ Automatic detection of property type, year built, and status
 - ✅ Realtor information extraction
+- ✅ Bulk search support
+
+### LoopNet
+- ✅ Full support for commercial real estate listings
+- ✅ Automatic detection of property type, year built, and status
+- ✅ Broker/agent information extraction
+- ✅ Bulk search support
+- ✅ Land and commercial property support
 
 ### MLS Platforms
 The extension works with various MLS platforms including:
@@ -211,6 +257,73 @@ Multiple realtors per listing are supported (e.g., listing agent and buyer's age
 - Open the browser console (F12) and check for errors
 - You may need to modify the content scripts to support specific platforms
 
+### Bulk search not working
+1. Make sure you've entered queries (one per line)
+2. Check that at least one website is selected (Realtor.com or LoopNet)
+3. The extension opens tabs in the background - check your tab bar
+4. Wait for the scraping to complete before exporting data
+
+## Testing the Extension
+
+Since I cannot directly test the extension in a browser, here's how you can test it:
+
+### Basic Testing Steps
+
+1. **Install the Extension**
+   - Follow the installation instructions above
+   - Make sure icons are added (or the extension may not load properly)
+   - Check that the extension appears in your Chrome toolbar
+
+2. **Test Manual Scraping**
+   - Visit a listing page on Realtor.com (search for "new homes 2025" in your area)
+   - Look for the scrape button in the bottom right corner
+   - Click the button and verify it shows "✓ Saved!" or "✗ No match"
+   - Open the extension popup and check if data appears
+
+3. **Test LoopNet Scraping**
+   - Visit LoopNet.com and search for "commercial land" or similar
+   - Open a listing page
+   - Look for the orange scrape button
+   - Click and verify the result
+
+4. **Test Bulk Search**
+   - Open the extension popup
+   - Click "Bulk Search" to expand the panel
+   - Enter test queries like:
+     ```
+     Los Angeles CA new homes
+     New York NY land
+     ```
+   - Set delay to 5 seconds
+   - Select both Realtor.com and LoopNet
+   - Click "Start Bulk Search"
+   - Watch as tabs open in the background
+   - Wait a few moments, then click "Refresh" in the popup
+   - Verify that data from multiple searches appears
+
+5. **Test CSV Export**
+   - After scraping some data, click "Export CSV"
+   - Open the downloaded CSV file in Excel or Google Sheets
+   - Verify all columns are present and data is correctly formatted
+
+6. **Test Filtering**
+   - Use the dropdown filters to filter by source and type
+   - Verify the data list updates correctly
+
+### Common Issues During Testing
+
+- **No scrape button appears**: Check browser console (F12) for JavaScript errors
+- **Button shows "No match"**: Verify the listing matches criteria (2025 build year or closed land lot)
+- **No data in popup**: Check Chrome DevTools Application tab → Storage → Local Storage
+- **Bulk search tabs don't open**: Check extension permissions in chrome://extensions/
+
+### Browser Console Messages
+
+The extension logs helpful debug messages. Open the browser console (F12) and look for:
+- `[MLS Scraper]` prefix messages
+- Any error messages in red
+- Network requests to verify page loads
+
 ## Development
 
 ### File Structure
@@ -219,6 +332,7 @@ Multiple realtors per listing are supported (e.g., listing agent and buyer's age
 ├── manifest.json           # Extension configuration
 ├── background.js          # Background service worker
 ├── content-realtor.js     # Content script for Realtor.com
+├── content-loopnet.js     # Content script for LoopNet
 ├── content-mls.js         # Content script for MLS sites
 ├── popup.html             # Popup interface HTML
 ├── popup.css              # Popup interface styles
@@ -301,6 +415,15 @@ If you encounter issues or have questions:
 3. Open an issue on the GitHub repository
 
 ## Version History
+
+### Version 1.1.0 (2025-11-04)
+- Added LoopNet support for commercial real estate
+- Added bulk search functionality
+- Automatic search across multiple queries
+- Enhanced CSV export as primary format
+- Improved filtering with LoopNet option
+- Background tab opening for bulk searches
+- Configurable search delays
 
 ### Version 1.0.0 (2025-11-04)
 - Initial release

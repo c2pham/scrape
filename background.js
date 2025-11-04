@@ -46,6 +46,13 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     });
     return true;
   }
+
+  if (request.action === 'startBulkSearch') {
+    startBulkSearch(request.queries, request.sites, request.delay).then((success) => {
+      sendResponse({ success: success });
+    });
+    return true;
+  }
 });
 
 // Save realtor data to storage
@@ -265,6 +272,69 @@ function escapeCsvValue(value) {
   }
 
   return str;
+}
+
+// Bulk search functionality
+async function startBulkSearch(queries, sites, delay) {
+  try {
+    console.log(`Starting bulk search for ${queries.length} queries`);
+
+    for (let i = 0; i < queries.length; i++) {
+      const query = queries[i];
+      console.log(`Processing query ${i + 1}/${queries.length}: ${query}`);
+
+      // Search on Realtor.com
+      if (sites.realtor) {
+        const realtorUrl = buildRealtorSearchUrl(query);
+        await chrome.tabs.create({
+          url: realtorUrl,
+          active: false
+        });
+
+        // Wait for delay before next search
+        if (i < queries.length - 1 || sites.loopnet) {
+          await sleep(delay);
+        }
+      }
+
+      // Search on LoopNet
+      if (sites.loopnet) {
+        const loopnetUrl = buildLoopNetSearchUrl(query);
+        await chrome.tabs.create({
+          url: loopnetUrl,
+          active: false
+        });
+
+        // Wait for delay before next search
+        if (i < queries.length - 1) {
+          await sleep(delay);
+        }
+      }
+    }
+
+    console.log('Bulk search completed');
+    return true;
+  } catch (error) {
+    console.error('Error in bulk search:', error);
+    return false;
+  }
+}
+
+// Build Realtor.com search URL
+function buildRealtorSearchUrl(query) {
+  const encoded = encodeURIComponent(query);
+  return `https://www.realtor.com/realestateandhomes-search/${encoded}`;
+}
+
+// Build LoopNet search URL
+function buildLoopNetSearchUrl(query) {
+  const encoded = encodeURIComponent(query);
+  return `https://www.loopnet.com/search/?sk=${encoded}`;
+}
+
+// Sleep helper function
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
 
 // Update badge when storage changes

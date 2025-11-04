@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "MLS & Realtor.com Scraper",
-  "version": "1.0.0",
-  "description": "Scrapes realtor information from MLS and Realtor.com listings for homes built this year and closed land lots",
+  "version": "1.1.0",
+  "description": "Scrapes realtor information from MLS, Realtor.com, and LoopNet listings for homes built this year and closed land lots",
   "permissions": [
     "storage",
     "activeTab",
@@ -11,6 +11,8 @@
   "host_permissions": [
     "https://www.realtor.com/*",
     "https://*.realtor.com/*",
+    "https://www.loopnet.com/*",
+    "https://*.loopnet.com/*",
     "*://*.mlslistings.com/*",
     "*://*.mls.com/*",
     "*://*/*"
@@ -33,6 +35,14 @@
         "https://*.realtor.com/*"
       ],
       "js": ["content-realtor.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": [
+        "https://www.loopnet.com/*",
+        "https://*.loopnet.com/*"
+      ],
+      "js": ["content-loopnet.js"],
       "run_at": "document_idle"
     },
     {
