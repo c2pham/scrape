@@ -2,6 +2,20 @@
 *.crx
 *.pem
 
+# Node.js
+node_modules/
+package-lock.json
+npm-debug.log
+yarn-error.log
+
+# Scraper output
+realtor-data-*.csv
+realtor-data-*.json
+*.csv
+*.json
+!package.json
+!queries.json
+
 # Development
 .DS_Store
 Thumbs.db
