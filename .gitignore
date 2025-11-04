@@ -1,0 +1,30 @@
+# Chrome Extension
+*.crx
+*.pem
+
+# Development
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Backup files
+*.bak
+*.backup
+*~
+
+# OS files
+.DS_Store
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
